@@ -8,7 +8,7 @@ Run the following commands from your terminal:
 1. `git clone https://github.com/FinnyJakey/ddd-swiftui` to clone this repository.
 
 ## Download DDD: Countdown Days at:
-`[App store]`: https://apps.apple.com/app/id(UPLOADING.. WILL BE UPDATED SOON :D)
+`[App store]`: https://apps.apple.com/app/id6469028427
 
 ## Screenshots
 <table width="100%">
