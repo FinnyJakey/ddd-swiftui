@@ -55,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		722372142AE0C9BE0030440C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		726663EB2AD17B94009067A3 /* DDaysViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDaysViewModel.swift; sourceTree = "<group>"; };
 		726663F12AD2D9FC009067A3 /* dddwidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = dddwidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		726663F32AD2D9FC009067A3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -178,6 +179,7 @@
 		72F53AF92ACEDFA900FE4D2E /* ddd */ = {
 			isa = PBXGroup;
 			children = (
+				722372142AE0C9BE0030440C /* Info.plist */,
 				726664092AD2E1D3009067A3 /* ddd.entitlements */,
 				72CBF9812AD1797100BB12B6 /* CoreData */,
 				72CBF9732AD144C800BB12B6 /* Views */,
@@ -519,6 +521,7 @@
 				DEVELOPMENT_TEAM = K33RM495UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ddd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DDD;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -556,6 +559,7 @@
 				DEVELOPMENT_TEAM = K33RM495UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ddd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DDD;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
