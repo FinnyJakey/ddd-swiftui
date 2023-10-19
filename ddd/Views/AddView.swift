@@ -78,20 +78,8 @@ struct AddView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    let dateFormatter: DateFormatter = .init()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-                    dateFormatter.locale = Locale.current
-                    
-                    let selectedDateString = dateFormatter.string(from: date)
-                    guard let selectedDate = dateFormatter.date(from: selectedDateString) else {
-                        return
-                    }
-                    
-                    ddaysVM.createDDay(id: UUID().uuidString, title: title, date: selectedDate, startWithOne: startWithOne)
-
+                    ddaysVM.createDDay(id: UUID().uuidString, title: title, date: date.toStringWithoutTime(), startWithOne: startWithOne)
                     WidgetCenter.shared.reloadAllTimelines()
-                    
                     dismiss()
                 } label: {
                     Text("Apply")
@@ -118,5 +106,13 @@ struct AddView_Previews: PreviewProvider {
         NavigationView {
             AddView(ddaysVM: DDaysViewModel())
         }
+    }
+}
+
+extension Date {
+    func toStringWithoutTime() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        return dateFormatter.string(from: self)
     }
 }

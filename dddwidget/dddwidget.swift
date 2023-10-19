@@ -23,14 +23,18 @@ struct Provider: TimelineProvider {
         var entries: [DDayEntry] = []
         
         let currentDate = Date()
-        for dayOffset in 0..<7 {
-            let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate)!
-            let startOfDate = Calendar.current.startOfDay(for: entryDate)
-            let entry = DDayEntry(date: startOfDate)
-            entries.append(entry)
+        
+        let calendar = Calendar.current
+
+        guard let nextMidnight = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: calendar.date(byAdding: .day, value: 1, to: currentDate)!) else {
+            return
         }
         
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let entry = DDayEntry(date: nextMidnight)
+        entries.append(entry)
+
+        let timeline = Timeline(entries: entries, policy: .after(nextMidnight))
+        
         completion(timeline)
     }
 }
@@ -50,49 +54,6 @@ func getData() throws -> [DDay] {
     return result
 }
 
-func getDayInformation(date: Date, startWithOne: Bool) -> String {
-    let dateFormatter: DateFormatter = .init()
-    dateFormatter.dateFormat = "yyyy-MM-dd"
-    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-    dateFormatter.locale = Locale.current
-    
-    let todayString = dateFormatter.string(from: Date())
-    guard let todayDate = dateFormatter.date(from: todayString) else {
-        return ""
-    }
-    
-    let compareDayString = dateFormatter.string(from: date)
-    guard let compareDate = dateFormatter.date(from: compareDayString) else {
-        return ""
-    }
-    
-    let calendar = Calendar.current
-    let components = calendar.dateComponents([.day], from: todayDate, to: compareDate)
-    
-    if (components.day == 0) {
-        return startWithOne ? "1 days" : "D-DAY"
-    }
-    
-    if (components.day! > 0) {
-        return "D-\(components.day!)"
-    }
-    
-    if (components.day! < 0) {
-        return startWithOne ? "\(abs(components.day!) + 1) days" : "\(abs(components.day!)) days"
-    }
-    
-    return ""
-}
-
-func getDateInformation(date: Date) -> String {
-    let dateFormatter: DateFormatter = .init()
-    dateFormatter.dateFormat = "yyyy.MM.dd"
-    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-    dateFormatter.locale = Locale.current
-    
-    return dateFormatter.string(from: date)
-}
-
 struct dddwidgetEntryView : View {
     @Environment(\.widgetFamily) private var widgetFamily
     
@@ -103,19 +64,27 @@ struct dddwidgetEntryView : View {
     var body: some View {
         switch widgetFamily {
         case .systemSmall:
-            SystemSmallWidget(dayInfo: getDayInformation(date: firstData?.date ?? Date(), startWithOne: firstData?.startWithOne ?? false), title: firstData?.title ?? "Birth Day", dateInfo: getDateInformation(date: firstData?.date ?? Date()))
+            SystemSmallWidget(
+                dayInfo: getDayInformation(inputDateString: firstData?.date ?? Date.now.toStringWithoutTime(), startWithOne: firstData?.startWithOne ?? false),
+                title: firstData?.title ?? "Birth Day",
+                dateInfo: firstData?.date ?? Date.now.toStringWithoutTime()
+            )
         case .systemMedium:
-            SystemMediumWidget(dayInfo: getDayInformation(date: firstData?.date ?? Date(), startWithOne: firstData?.startWithOne ?? false), title: firstData?.title ?? "Birth Day", dateInfo: getDateInformation(date: firstData?.date ?? Date()))
+            SystemMediumWidget(
+                dayInfo: getDayInformation(inputDateString: firstData?.date ?? Date.now.toStringWithoutTime(), startWithOne: firstData?.startWithOne ?? false),
+                title: firstData?.title ?? "Birth Day",
+                dateInfo: firstData?.date ?? Date.now.toStringWithoutTime()
+            )
         case .accessoryRectangular:
             VStack(alignment: .center) {
                 Text(firstData?.title ?? "Birth Day")
                     .font(.callout)
                     .foregroundColor(.secondary)
-                
+
                 Spacer()
                     .frame(height: 8)
-                
-                Text(getDayInformation(date: firstData?.date ?? Date.now, startWithOne: firstData?.startWithOne ?? false))
+
+                Text(getDayInformation(inputDateString: firstData?.date ?? Date.now.toStringWithoutTime(), startWithOne: firstData?.startWithOne ?? false))
                     .fontWeight(.semibold)
 
             }
@@ -123,6 +92,31 @@ struct dddwidgetEntryView : View {
             Text("UNKNOWN")
         }
         
+    }
+    
+    func getDayInformation(inputDateString: String, startWithOne: Bool) -> String {
+        let dateFormatter: DateFormatter = .init()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        
+        let calendar = Calendar.current
+        let todayDate = calendar.startOfDay(for: Date())
+        let targetDate = calendar.startOfDay(for: dateFormatter.date(from: inputDateString)!)
+        
+        let components = calendar.dateComponents([.day], from: todayDate, to: targetDate)
+        
+        if (components.day == 0) {
+            return startWithOne ? "1 days" : "D-DAY"
+        }
+        
+        if (components.day! > 0) {
+            return "D-\(components.day!)"
+        }
+        
+        if (components.day! < 0) {
+            return startWithOne ? "\(abs(components.day!) + 1) days" : "\(abs(components.day!)) days"
+        }
+        
+        return ""
     }
 }
 
@@ -208,3 +202,10 @@ struct dddwidget_Previews: PreviewProvider {
     }
 }
 
+extension Date {
+    func toStringWithoutTime() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        return dateFormatter.string(from: self)
+    }
+}

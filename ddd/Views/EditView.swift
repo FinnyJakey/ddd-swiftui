@@ -25,10 +25,8 @@ struct EditView: View {
         self.dday = dday
         self.ddaysVM = ddaysVM
         
-//        _title = State(initialValue: dday.title!)
         _title = State(initialValue: dday.title ?? "")
-//        _date = State(initialValue: dday.date!)
-        _date = State(initialValue: dday.date ?? Date())
+        _date = State(initialValue: dday.date?.toDate() ?? .now)
         _startWithOne = State(initialValue: dday.startWithOne)
     }
     
@@ -95,20 +93,8 @@ struct EditView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    let dateFormatter: DateFormatter = .init()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-                    dateFormatter.locale = Locale.current
-                    
-                    let selectedDateString = dateFormatter.string(from: date)
-                    guard let selectedDate = dateFormatter.date(from: selectedDateString) else {
-                        return
-                    }
-                    
-                    ddaysVM.updateDDay(id: dday.id!, title: title, date: selectedDate, startWithOne: startWithOne, order: dday.order)
-
+                    ddaysVM.updateDDay(id: dday.id!, title: title, date: date.toStringWithoutTime(), startWithOne: startWithOne, order: dday.order)
                     WidgetCenter.shared.reloadAllTimelines()
-                    
                     dismiss()
                 } label: {
                     Text("Done")
@@ -133,5 +119,13 @@ struct EditView: View {
 struct EditView_Previews: PreviewProvider {
     static var previews: some View {
         EditView(dday: DDay.init(entity: .init(), insertInto: .none), ddaysVM: DDaysViewModel())
+    }
+}
+
+extension String {
+    func toDate() -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        return dateFormatter.date(from: self)!
     }
 }

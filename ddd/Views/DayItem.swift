@@ -17,13 +17,13 @@ struct DayItem: View {
             Spacer(minLength: 18)
             
             HStack {
-                Text(getDayInformation(date: dday.date!))
+                Text(getDayInformation(inputDateString: dday.date!))
                     .font(.callout)
                     .foregroundColor(.accentColor)
-                
+
                 Spacer()
-                
-                Text(getDateInformation(date: dday.date!))
+
+                Text(dday.date!)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -36,8 +36,6 @@ struct DayItem: View {
             Spacer(minLength: 18)
 
             Divider()
-            
-            
         }
         .frame(
             minWidth: 0,
@@ -48,24 +46,15 @@ struct DayItem: View {
         )
     }
     
-    func getDayInformation(date: Date) -> String {
+    func getDayInformation(inputDateString: String) -> String {
         let dateFormatter: DateFormatter = .init()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        dateFormatter.locale = Locale.current
-        
-        let todayString = dateFormatter.string(from: Date())
-        guard let todayDate = dateFormatter.date(from: todayString) else {
-            return ""
-        }
-        
-        let compareDayString = dateFormatter.string(from: date)
-        guard let compareDate = dateFormatter.date(from: compareDayString) else {
-            return ""
-        }
+        dateFormatter.dateFormat = "yyyy.MM.dd"
         
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: todayDate, to: compareDate)
+        let todayDate = calendar.startOfDay(for: Date())
+        let targetDate = calendar.startOfDay(for: dateFormatter.date(from: inputDateString)!)
+        
+        let components = calendar.dateComponents([.day], from: todayDate, to: targetDate)
         
         if (components.day == 0) {
             return dday.startWithOne ? "1 days" : "D-DAY"
@@ -80,14 +69,5 @@ struct DayItem: View {
         }
         
         return ""
-    }
-    
-    func getDateInformation(date: Date) -> String {
-        let dateFormatter: DateFormatter = .init()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        dateFormatter.locale = Locale.current
-        
-        return dateFormatter.string(from: date)
     }
 }

@@ -20,7 +20,7 @@ class DDaysViewModel: ObservableObject {
         DDays = dataService.read()
     }
 
-    func createDDay(id: String, title: String, date: Date, startWithOne: Bool) {
+    func createDDay(id: String, title: String, date: String, startWithOne: Bool) {
         dataService.create(id: id, title: title, date: date, startWithOne: startWithOne, order: (DDays.last?.order ?? 0) + 1)
         getAllDDays()
     }
@@ -36,7 +36,7 @@ class DDaysViewModel: ObservableObject {
         getAllDDays()
     }
     
-    func updateDDay(id: String, title: String, date: Date, startWithOne: Bool, order: Int64) {
+    func updateDDay(id: String, title: String, date: String, startWithOne: Bool, order: Int64) {
         dataService.update(id: id, title: title, date: date, startWithOne: startWithOne, order: order)
         getAllDDays()
     }

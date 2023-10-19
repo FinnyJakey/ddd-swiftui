@@ -42,7 +42,7 @@ class PersistenceController {
         }
     }
     
-    func create(id: String, title: String, date: Date, startWithOne: Bool, order: Int64) {
+    func create(id: String, title: String, date: String, startWithOne: Bool, order: Int64) {
         let entity = DDay(context: container.viewContext)
         
         entity.id = id
@@ -95,7 +95,7 @@ class PersistenceController {
         saveChanges()
     }
     
-    func update(id: String, title: String, date: Date, startWithOne: Bool, order: Int64) {
+    func update(id: String, title: String, date: String, startWithOne: Bool, order: Int64) {
         var results: [DDay] = []
 
         let request = NSFetchRequest<DDay>(entityName: "DDay")
